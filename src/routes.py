@@ -133,18 +133,73 @@ class Routes:
         ax.set_ylabel(y_column)
 
         st.pyplot(fig)
-        
     
-    # def setup_for_visualisation(self):
-    #     if not os.path.exists("Data/uploaded.csv"):
-    #         st.warning("Please upload the validation data for visualization")
+    def prepare_text_for_export(self):
+        # read Data/info_json.json and convert it to a dict 
+        with open('Data/info_json.json', 'r') as json_file:
+            info_json = json.load(json_file)
+
+        # convert dict to a string
+        print(info_json)
+
+        model_name = info_json['model_name']
+        public_info  = info_json['public_info']
+        assumptions = info_json['assumptions']
+        assumptions_reasons = info_json['assumptions_reasons']
         
-    #     validation_dataframe = pd.read_csv('Data/uploaded.csv')
-    #     st.dataframe(validation_dataframe)
+        header = st.header("Here is your final information about observations you have gathered")
         
-    #     self.visualise_data()
+        public_info_header = st.subheader("Public information")
+        public_info = st.write(public_info)
+        
+        assumptions_header = st.subheader("Assumptions")
+        assumptions_info = st.write(assumptions)
+        
+        assumptions_header = st.subheader("Assumptions Reasons")
+        assumptions_info = st.write(assumptions_reasons)
+        
+        # add a dataframe here 
+        
+        st.markdown("----")
+        modelling_header = st.subheader("Modelling and results")
+        
+        model_name_info = st.markdown(f"The model that has been selected is: **`{model_name}`**")
+                
+        dataframe_header = st.subheader("Validation data results")
+        dataframe_about = st.write("Below is our dataframe that contains the model output along with its confidence score")
+        
+        df = pd.read_csv('Data/data.csv')
+        st.dataframe(df)
+        
+        st.markdown("----")
+        
+        # Data and model visualizations 
+        
+        st.write("Data descriptions")
+        
+        y_true = df['model_target']
+        y_pred = df['model_output']
+
+        st.dataframe(df.describe())
+
+        st.title('Confusion Matrix')
+        cm = confusion_matrix(y_true, y_pred)
+
+        fig, ax = plt.subplots()
+        im = ax.imshow(cm, cmap=plt.cm.Blues)
+
+        ax.set_xticks(np.arange(cm.shape[1]))
+        ax.set_yticks(np.arange(cm.shape[0]))
+        ax.set_xticklabels(['Negative', 'Positive'])
+        ax.set_yticklabels(['Negative', 'Positive'])
+        ax.set_title("Confusion Matrix")
+        plt.colorbar(im)
+        
+                
+        
     
     def export(self):
-        st.write("Export visualizations in the form of .pdf")
+        self.prepare_text_for_export()
+        
     
     
