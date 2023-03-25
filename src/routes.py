@@ -3,11 +3,13 @@ import json
 import pandas as pd 
 import streamlit as st 
 import numpy as np
+import seaborn as sns 
 import matplotlib.pyplot as plt 
 from src.asset_upload import UploadAssets
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
+from src.gpt import getTextGPT
 
 class Routes:
     def __init__(self) -> None:
@@ -34,30 +36,39 @@ class Routes:
     def public_model_info(self):
         info_json = {}
         st.write("Add Public and Model Informationn")
-    
-        label1 = "Model name and info: "
-        self.model_name = st.text_input(label1)
+        
+        self.overview = st.text_area("Write a small overview of the problem statement") 
+        self.data_prep = st.text_area("Data preparation approaches")
+        
+        self.model_name = st.text_input("Model name and info: ")
+        self.model_methadology = st.text_area("Public info: ")
+        
+        # show a model performance report in dataframe 
+        
+        self.assumptions = st.text_area("Assumptions")
+        self.assumption_reasons = st.text_area("Reason for above decisions")
+        self.conclusion = st.text_area("Add any of your conclusions")
+        
+        if self.overview:
+            info_json['overview'] = self.overview
+        
+        if self.data_prep:
+            info_json['data_prep'] = self.data_prep
         
         if self.model_name: 
             info_json['model_name'] = self.model_name 
 
-        label2 = "Public info: "
-        self.public_info = st.text_area(label2)
+        if self.model_methadology:
+            info_json['model_methadology'] = self.model_methadology
         
-        if self.public_info:
-            info_json['public_info'] = self.public_info 
-
-        label3 = "Assumptions: "
-        self.assumptions = st.text_area(label3)
-        
-        if self.public_info:
+        if self.assumptions:
             info_json['assumptions'] = self.assumptions 
-
-        label4 = "Reason for above decisions"
-        self.assumptions_reasons = st.text_area(label4)
         
         if self.assumptions_reasons:
             info_json['assumptions_reasons'] = self.assumptions_reasons 
+        
+        if self.conclusion:
+            info_json['conclusion'] = self.conclusion
 
         # Add a submit button
         if st.button("Submit"):
@@ -140,23 +151,7 @@ class Routes:
             info_json = json.load(json_file)
 
         # convert dict to a string
-        print(info_json)
-
-        model_name = info_json['model_name']
-        public_info  = info_json['public_info']
-        assumptions = info_json['assumptions']
-        assumptions_reasons = info_json['assumptions_reasons']
-        
-        header = st.header("Here is your final information about observations you have gathered")
-        
-        public_info_header = st.subheader("Public information")
-        public_info = st.write(public_info)
-        
-        assumptions_header = st.subheader("Assumptions")
-        assumptions_info = st.write(assumptions)
-        
-        assumptions_header = st.subheader("Assumptions Reasons")
-        assumptions_info = st.write(assumptions_reasons)
+       
         
         # add a dataframe here 
         
@@ -201,7 +196,7 @@ class Routes:
     def export(self):
         st.write("Export visualizations in the form of .pdf")
         import json
-        f1 = open('Data\info_json.json', 'r')
+        f1 = open('Data/info_json.json', 'r')
         info = json.load(f1)
 
         text = getTextGPT(info)

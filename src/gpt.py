@@ -1,7 +1,7 @@
 import openai
 import os
 
-openai.api_key = os.environ.get('GPT')
+openai.api_key = "U2HJ83bf10TycQmUFgzyT3BlbkFJoZJc36gQBWd0ajl4H4Ed"
 
 
 def getResp(prompt):
