@@ -1,15 +1,15 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-# from fpdf import FPDF
-import base64
 import numpy as np
-from tempfile import NamedTemporaryFile
+from pynput.keyboard import Key, Controller
+import time
 from datetime import datetime
 import pandas as pd
 import json
 from src.gpt import getTextGPT
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import seaborn as sns
 
 from src.visualisations import MetricsViz
 
@@ -47,7 +47,17 @@ class PdfReportGenerator(MetricsViz):
         assumptions = info_json["assumptions"]
         conclusion = info_json["conclusion"]
 
-        st.header("Complete Generated Report")
+        header_container = st.container()
+        keyboard = Controller()
+        with header_container:
+            st.header("Complete Generated Report")
+            pressed = st.button("Download PDF")
+            if pressed:
+                keyboard.press(Key.ctrl)
+                keyboard.press('p')
+                keyboard.release('p')
+                keyboard.release(Key.ctrl)
+                time.sleep(5)
         datetime_ = st.write(datetime.today())
 
         overview_header = st.subheader("Overview")
@@ -61,8 +71,6 @@ class PdfReportGenerator(MetricsViz):
             "Below is our dataframe that contains the model output along with its confidence score"
         )
 
-        st.markdown("----")
-
         st.dataframe(df)
 
         st.markdown("----")
@@ -73,6 +81,13 @@ class PdfReportGenerator(MetricsViz):
 
         st.subheader('Data stats')
         st.dataframe(df.describe())
+
+        st.markdown("----")
+
+        st.subheader("Correlation Matrix")
+        corr = df.corr()
+        heatmap = sns.heatmap(corr, annot=True)
+        st.pyplot(heatmap.figure)
 
         st.markdown("----")
 
