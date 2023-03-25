@@ -6,8 +6,23 @@ def page1():
     st.write("Welcome to Page 1!")
 
 def page2():
-    st.title("Page 2")
-    st.write("Welcome to Page 2!")
+    label1 = "Model name and info: "
+    text1 = st.text_area(label1)
+
+    label2 = "Public info: "
+    text2 = st.text_area(label2)
+
+    label3 = "Assumptions: "
+    text3 = st.text_area(label3)
+
+    label4 = "Reason for above decisions"
+    text4 = st.text_area(label4)
+
+    # Add a submit button
+    if st.button("Submit"):
+        # Handle the form submission here
+        st.write("You clicked the Submit button!")
+
 
 def page3():
     st.title("Page 3")
