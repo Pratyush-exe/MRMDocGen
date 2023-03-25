@@ -199,7 +199,67 @@ class Routes:
         
     
     def export(self):
-        self.prepare_text_for_export()
+        st.write("Export visualizations in the form of .pdf")
+        import json
+        f1 = open('Data\info_json.json', 'r')
+        info = json.load(f1)
+
+        text = getTextGPT(info)
+        st.title("Problem Defined")
+        st.write(text["problem_statement"])
+
+        st.title("Model Used")
+        st.write(text["model_name"])
+
+        st.title("Public Info")
+        st.write(text["public_info"])
+
+        st.title("Assumptions")
+        st.write(text["assumptions"])
+
+        st.title("Reason for assumptions")
+        st.write(text["assumptions_reasons"])
+
+        df = pd.read_csv('Data/data.csv')
+        df['model_output'] = df['model_output'].apply(self.thresh)
+        y_true = df['model_target']
+        y_pred = df['model_output']
+        st.title('Data stats')
+        st.dataframe(df.describe())
+
+        st.title('Confusion Matrix')
+        cm = confusion_matrix(y_true, y_pred)
+
+        fig, ax = plt.subplots()
+        im = ax.imshow(cm, cmap=plt.cm.Blues)
+
+        ax.set_xticks(np.arange(cm.shape[1]))
+        ax.set_yticks(np.arange(cm.shape[0]))
+        ax.set_xticklabels(['Negative', 'Positive'])
+        ax.set_yticklabels(['Negative', 'Positive'])
+        ax.set_title("Confusion Matrix")
+        plt.colorbar(im)
+
+        def compute_metrics():
+            accuracy = accuracy_score(y_true, y_pred)
+            precision = precision_score(y_true, y_pred)
+            recall = recall_score(y_true, y_pred)
+            f1 = f1_score(y_true, y_pred)
+
+            return {'Accuracy': accuracy, 'Precision': precision, 'Recall': recall, 'F1': f1}
+
+        metrics = compute_metrics()
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            st.pyplot(fig)
+        with col2:
+            for key, value in metrics.items():
+                st.write(key + ':', value)
+
+        st.title("Correlation Matrix")
+        corr = df.corr()
+        heatmap = sns.heatmap(corr, annot=True)
+        st.pyplot(heatmap.figure)
         
     
     
