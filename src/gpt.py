@@ -1,6 +1,7 @@
 import openai
 import os
 
+
 openai.api_key = "API"
 
 
@@ -12,10 +13,10 @@ def getResp(prompt):
         max_tokens=64,
         top_p=1.0,
         frequency_penalty=0.0,
-        presence_penalty=0.0
+        presence_penalty=0.0,
     )
     print(response)
-    return response["choices"][0]['text']
+    return response["choices"][0]["text"]
 
 
 def getTextGPT(info):
@@ -26,3 +27,4 @@ def getTextGPT(info):
             "assumptions": getResp("Explain this assumptions properly: " + info["assumptions"]),
             "assumptions_reasons": getResp("Explain this reason for assumptions properly: " + info["assumptions_reasons"])
            }
+
