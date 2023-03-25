@@ -1,4 +1,5 @@
 import streamlit as st
+from src.asset_upload import UploadAssets
 
 # Define the contents of the three pages
 def page1():
