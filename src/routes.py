@@ -15,14 +15,12 @@ from src.visualisations import MetricsViz
 from src.pdf_report import PdfReportGenerator
 
 
-
 class Routes:
     def __init__(self) -> None:
         self.model_name = None
         self.public_info = None
         self.assumptions = None
         self.assumptions_reasons = None
-
 
     def home(self):
         st.title("Page 1")
@@ -45,6 +43,6 @@ class Routes:
         MetricsViz().visualise()
 
     def export(self):
-        # TODO Integrate chatGPT for better writing output 
+        # TODO Integrate chatGPT for better writing output
         pdf_report = PdfReportGenerator()
         pdf_report.prepare_report()
