@@ -18,7 +18,7 @@ class ModelDataInfo:
         """
 
         info_json = {}
-        st.write("Add Public and Model Informationn")
+        st.title("Add Public and Model Informationn")
 
         self.overview = st.text_area(
             "Write a small overview of the problem statement"

@@ -57,7 +57,7 @@ class PdfReportGenerator(MetricsViz):
                 keyboard.press('p')
                 keyboard.release('p')
                 keyboard.release(Key.ctrl)
-                time.sleep(5)
+                time.sleep(10)
         datetime_ = st.write(datetime.today())
 
         overview_header = st.subheader("Overview")

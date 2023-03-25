@@ -57,7 +57,7 @@ class MetricsViz:
         }
 
     def visualise(self):
-        st.write("Visualise Data and Model inference info")
+        st.title("Data Visualization")
         # self.setup_for_visualisation()
 
         df = pd.read_csv("Data/data.csv")
@@ -65,13 +65,13 @@ class MetricsViz:
         y_true = df["model_target"]
         y_pred = df["model_output"]
 
-        st.title("Data")
+        st.subheader("Data")
         st.dataframe(df)
 
-        st.title("Data stats")
+        st.subheader("Data stats")
         st.dataframe(df.describe())
 
-        st.title("Confusion Matrix")
+        st.subheader("Confusion Matrix")
         cm = confusion_matrix(y_true, y_pred)
 
         fig, ax = plt.subplots()
@@ -88,7 +88,7 @@ class MetricsViz:
         metrics_df = pd.DataFrame(metrics)
         st.dataframe(metrics_df)
 
-        st.title("Scatter Plots")
+        st.subheader("Scatter Plots")
         col1, col2 = st.columns([2, 1])
         with col1:
             x_column = st.selectbox("Select X column", df.columns)
