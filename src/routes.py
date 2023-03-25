@@ -3,6 +3,7 @@ import json
 import pandas as pd
 import streamlit as st
 import numpy as np
+
 import seaborn as sns
 import matplotlib.pyplot as plt
 from src.asset_upload import UploadAssets
@@ -14,12 +15,14 @@ from src.visualisations import MetricsViz
 from src.pdf_report import PdfReportGenerator
 
 
+
 class Routes:
     def __init__(self) -> None:
         self.model_name = None
         self.public_info = None
         self.assumptions = None
         self.assumptions_reasons = None
+
 
     def home(self):
         with open('README.md') as f:
