@@ -23,8 +23,11 @@ class Routes:
         self.assumptions_reasons = None
 
     def home(self):
-        st.title("Page 1")
-        st.write("Welcome to Page 1!")
+        with open('README.md') as f:
+            home_text = f.read()
+        
+        st.markdown(home_text)
+        
 
     def upload_assets(self):
         assets = UploadAssets()
