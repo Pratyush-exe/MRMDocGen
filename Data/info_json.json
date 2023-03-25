@@ -1,0 +1,6 @@
+{
+    "model_name": "XGBoost:b1",
+    "public_info": "This is a public info about everything\n",
+    "assumptions": "we have made some assumptions\nwhich are something okay",
+    "assumptions_reasons": "We have some reaons  like\n- xgboost is really great"
+}
