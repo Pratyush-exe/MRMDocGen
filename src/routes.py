@@ -1,76 +1,74 @@
-import os 
-import json 
-import pandas as pd 
-import streamlit as st 
+import os
+import json
+import pandas as pd
+import streamlit as st
 import numpy as np
-import seaborn as sns 
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 from src.asset_upload import UploadAssets
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-
 from src.gpt import getTextGPT
+import seaborn as sns
+import pyautogui
+
 
 class Routes:
     def __init__(self) -> None:
-        self.model_name = None 
-        self.public_info = None 
-        self.assumptions = None 
+        self.model_name = None
+        self.public_info = None
+        self.assumptions = None
         self.assumptions_reasons = None
-    
+        self.problem = None
+
     def home(self):
         st.title("Page 1")
         st.write("Welcome to Page 1!")
-    
+
     def upload_assets(self):
         assets = UploadAssets()
-        self.model_file = assets.upload_model() 
+        self.model_file = assets.upload_model()
         validation_data = assets.upload_validation_data()
-        
+
         if validation_data:
             df = pd.read_csv(validation_data)
-            st.dataframe(df) 
+            st.dataframe(df)
             df.to_csv('Data/uploaded.csv')
-            
-    
+
     def public_model_info(self):
         info_json = {}
-        st.write("Add Public and Model Informationn")
-        
-        self.overview = st.text_area("Write a small overview of the problem statement") 
-        self.data_prep = st.text_area("Data preparation approaches")
-        
-        self.model_name = st.text_input("Model name and info: ")
-        self.model_methadology = st.text_area("Public info: ")
-        
-        # show a model performance report in dataframe 
-        
-        self.assumptions = st.text_area("Assumptions")
-        self.assumption_reasons = st.text_area("Reason for above decisions")
-        self.conclusion = st.text_area("Add any of your conclusions")
-        
-        if self.overview:
-            info_json['overview'] = self.overview
-        
-        if self.data_prep:
-            info_json['data_prep'] = self.data_prep
-        
-        if self.model_name: 
-            info_json['model_name'] = self.model_name 
+        st.title("Add Public and Model Information")
 
-        if self.model_methadology:
-            info_json['model_methadology'] = self.model_methadology
-        
-        if self.assumptions:
-            info_json['assumptions'] = self.assumptions 
-        
+        label0 = "Problem: "
+        self.problem = st.text_input(label0)
+
+        if self.problem:
+            info_json['problem'] = self.problem
+
+        label1 = "Model name and info: "
+        self.model_name = st.text_input(label1)
+
+        if self.model_name:
+            info_json['model_name'] = self.model_name
+
+        label2 = "Public info: "
+        self.public_info = st.text_area(label2)
+
+        if self.public_info:
+            info_json['public_info'] = self.public_info
+
+        label3 = "Assumptions: "
+        self.assumptions = st.text_area(label3)
+
+        if self.public_info:
+            info_json['assumptions'] = self.assumptions
+
+        label4 = "Reason for above decisions"
+        self.assumptions_reasons = st.text_area(label4)
+
         if self.assumptions_reasons:
-            info_json['assumptions_reasons'] = self.assumptions_reasons 
-        
-        if self.conclusion:
-            info_json['conclusion'] = self.conclusion
+            info_json['assumptions_reasons'] = self.assumptions_reasons
 
-        # Add a submit button
+            # Add a submit button
         if st.button("Submit"):
             # Handle the form submission here
             st.write("Noted all your observations and assumptions")
@@ -79,17 +77,16 @@ class Routes:
                 json.dump(info_json, outfile, indent=4)
             st.success("Noted all your assumptions and observations")
 
-    
     def thresh(self, x):
         if x > 0.5:
             return 1
         else:
             return 0
-    
+
     def visualise_data(self):
-        st.write("Visualise Data and Model inference info")
-        #self.setup_for_visualisation() 
-        
+        st.title("Visualise Data and Model inference info")
+        # self.setup_for_visualisation()
+
         df = pd.read_csv('Data/data.csv')
         df['model_output'] = df['model_output'].apply(self.thresh)
         y_true = df['model_target']
@@ -121,7 +118,7 @@ class Routes:
             f1 = f1_score(y_true, y_pred)
 
             return {'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1}
-        
+
         metrics = compute_metrics()
         col1, col2 = st.columns([2, 1])
         with col1:
@@ -129,7 +126,6 @@ class Routes:
         with col2:
             for key, value in metrics.items():
                 st.write(key + ':', value)
-
 
         st.title('Scatter Plots')
         col1, col2 = st.columns([2, 1])
@@ -144,34 +140,51 @@ class Routes:
         ax.set_ylabel(y_column)
 
         st.pyplot(fig)
-    
+
     def prepare_text_for_export(self):
         # read Data/info_json.json and convert it to a dict 
         with open('Data/info_json.json', 'r') as json_file:
             info_json = json.load(json_file)
 
         # convert dict to a string
-       
-        
+        print(info_json)
+
+        model_name = info_json['model_name']
+        public_info = info_json['public_info']
+        assumptions = info_json['assumptions']
+        assumptions_reasons = info_json['assumptions_reasons']
+
+        header = st.header("Here is your final information about observations you have gathered")
+
+        public_info_header = st.subheader("Public information")
+        public_info = st.write(public_info)
+
+        assumptions_header = st.subheader("Assumptions")
+        assumptions_info = st.write(assumptions)
+
+        assumptions_header = st.subheader("Assumptions Reasons")
+        assumptions_info = st.write(assumptions_reasons)
+
         # add a dataframe here 
-        
+
         st.markdown("----")
         modelling_header = st.subheader("Modelling and results")
-        
+
         model_name_info = st.markdown(f"The model that has been selected is: **`{model_name}`**")
-                
+
         dataframe_header = st.subheader("Validation data results")
-        dataframe_about = st.write("Below is our dataframe that contains the model output along with its confidence score")
-        
+        dataframe_about = st.write(
+            "Below is our dataframe that contains the model output along with its confidence score")
+
         df = pd.read_csv('Data/data.csv')
         st.dataframe(df)
-        
+
         st.markdown("----")
-        
+
         # Data and model visualizations 
-        
+
         st.write("Data descriptions")
-        
+
         y_true = df['model_target']
         y_pred = df['model_output']
 
@@ -189,19 +202,23 @@ class Routes:
         ax.set_yticklabels(['Negative', 'Positive'])
         ax.set_title("Confusion Matrix")
         plt.colorbar(im)
-        
-                
-        
-    
+
     def export(self):
-        st.write("Export visualizations in the form of .pdf")
         import json
-        f1 = open('Data/info_json.json', 'r')
+
+        header_container = st.container()
+        header_row = header_container.columns([3, 1])
+
+        header_row[0].title("Summary Document")
+        # if header_row[1].button("Download PDF"):
+        #     pyautogui.hotkey('ctrl', 'p')
+
+        f1 = open('Data\info_json.json', 'r')
         info = json.load(f1)
 
         text = getTextGPT(info)
         st.title("Problem Defined")
-        st.write(text["problem_statement"])
+        st.write(text["problem"])
 
         st.title("Model Used")
         st.write(text["model_name"])
@@ -255,6 +272,3 @@ class Routes:
         corr = df.corr()
         heatmap = sns.heatmap(corr, annot=True)
         st.pyplot(heatmap.figure)
-        
-    
-    
