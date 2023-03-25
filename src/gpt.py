@@ -1,7 +1,7 @@
 import openai
 import os
 
-openai.api_key = "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"
+openai.api_key = "API"
 
 
 def getResp(prompt):
