@@ -5,7 +5,7 @@ from src.routes import Routes
 
 # Define the app
 def app():
-    st.set_page_config(page_title="My App")
+    #st.set_page_config(page_title="My App")
     st_routes = Routes()
     
     # Create a dictionary that maps page names to page functions
