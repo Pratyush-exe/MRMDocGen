@@ -1,28 +1,20 @@
 import streamlit as st
 from src.asset_upload import UploadAssets
+from src.routes import Routes 
 
-# Define the contents of the three pages
-def page1():
-    st.title("Page 1")
-    st.write("Welcome to Page 1!")
-
-def page2():
-    st.title("Page 2")
-    st.write("Welcome to Page 2!")
-
-def page3():
-    st.title("Page 3")
-    st.write("Welcome to Page 3!")
 
 # Define the app
 def app():
     st.set_page_config(page_title="My App")
-
+    st_routes = Routes()
+    
     # Create a dictionary that maps page names to page functions
     pages = {
-        "Page 1": page1,
-        "Page 2": page2,
-        "Page 3": page3
+        "Home": st_routes.home,
+        "Upload model and data": st_routes.upload_assets,
+        "Add public and model info": st_routes.public_model_info, 
+        "Visualise data and model output": st_routes.visualise_data, 
+        "Export pdf": st_routes.export
     }
 
     # Display a list of pages on the left side

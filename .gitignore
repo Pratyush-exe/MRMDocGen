@@ -2,3 +2,4 @@
 .mrm_venv/
 .idea/
 src/__pycache__
+venv
