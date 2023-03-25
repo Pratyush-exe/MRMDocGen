@@ -217,10 +217,10 @@ class Routes:
         info = json.load(f1)
 
         text = getTextGPT(info)
-        st.title("Problem Defined")
+        st.title("Overview")
         st.write(text["problem"])
 
-        st.title("Model Used")
+        st.title("Model Description")
         st.write(text["model_name"])
 
         st.title("Public Info")
