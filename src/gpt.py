@@ -1,7 +1,8 @@
 import openai
 import os
 
-openai.api_key = "U2HJ83bf10TycQmUFgzyT3BlbkFJoZJc36gQBWd0ajl4H4Ed" # have to chage this 
+
+openai.api_key = "API"
 
 
 def getResp(prompt):
@@ -19,11 +20,11 @@ def getResp(prompt):
 
 
 def getTextGPT(info):
-    result = {}
-    for query in info.keys():
-        result[query] = getResp(
-            "Explain this text and concepts used in it properly: "
-            + info[query]
-        )
+    return {
+            "problem": getResp("Explain this problem statement properly: " + info["problem"]),
+            "model_name": getResp("Explain the model description and techs mentioned here properly: " + info["model_name"]),
+            "public_info": getResp("Explain this public information given properly: " + info["public_info"]),
+            "assumptions": getResp("Explain this assumptions properly: " + info["assumptions"]),
+            "assumptions_reasons": getResp("Explain this reason for assumptions properly: " + info["assumptions_reasons"])
+           }
 
-    return result
