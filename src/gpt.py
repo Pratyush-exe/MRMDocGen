@@ -2,7 +2,7 @@ import openai
 import os
 
 
-openai.api_key = "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"
+openai.api_key = "" # Fetch from a .env file 
 
 
 def getResp(prompt):
